@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Document</title>
+  <meta charset="utf-8" />
+ </head>
+ <body>
+<input id="btn" type="button" value="异步交互"/>
+  <script>
+	var btn=document.querySelector("#btn");
+	btn.onclick=function(){
+		var xhr=getxhr();
+		xhr.open("GET","ajax.php?user=huangsihui");
+		xhr.send(null);
+		xhr.onreadystatechange=function(){
+			if(xhr.readyState==4){
+				if(xhr.status==200){
+					var data = xhr.responseText;
+					console.log(data);
+				}
+			}
+		}
+	}
+	function getxhr(){
+		var xhr=null;
+		if(window.XMLHttpRequest){
+			xhr=new XMLHttpRequest();
+		}else{
+			xhr=new ActiveXObject("Microsoft.XMLHttp")
+		}
+		return xhr;
+	}
+  </script>
+ </body>
+</html>
