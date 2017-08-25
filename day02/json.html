@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>二级联动</title>
+  <meta charset="utf-8" />
+ </head>
+ <body>
+  <select id="province">
+	<option>请选择</option>
+  </select>
+   <select id="city">
+	<option>请选择</option>
+  </select>
+  <script>
+	var province=document.getElementById("province");
+	var city=document.getElementById("city");
+	var xhr=getXhr();
+	window.onload=function(){	
+		xhr.open("get","json.php?state=1");
+		xhr.send(null);
+		xhr.onreadystatechange=function(){
+			if(xhr.readyState==4&&xhr.status==200){
+				var arr=xhr.responseText;
+				var pro = eval("("+arr+")");
+				//console.log(pro);
+				for(var i=0;i<pro.length;i++){
+					var provinceVal=pro[i];
+					var optionEle=document.createElement("option");
+					var optionTxt=document.createTextNode(provinceVal);
+					optionEle.appendChild(optionTxt);
+					province.appendChild(optionEle);
+				}
+			}
+		}
+	}
+	province.onchange=function(){
+		var opts = city.getElementsByTagName("option");
+		for(var z=opts.length-1;z>0;z--){
+			city.removeChild(opts[z]);
+		}
+		//xhr.open("get","json.php?state=2");
+			//xhr.send(null);
+			xhr.open("post","json.php");
+			xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			xhr.send("state=2&&province="+province.value);
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState==4&&xhr.status==200){
+					var data = xhr.responseText;
+					var ct = eval("("+data+")");
+					//console.log(ct);
+					for(var i=0;i<ct.length;i++){
+						var cityVal=ct[i];
+						var optionEle=document.createElement("option");
+						var optionTxt=document.createTextNode(cityVal);
+						optionEle.appendChild(optionTxt);
+						city.appendChild(optionEle);
+					}
+					/*for(var key in ct){
+						if(key==province.value){
+							//console.log(ct[key]);
+							for(var i=0;i<ct[key].length;i++){
+								var cityVal=ct[key][i];
+								var optionEle=document.createElement("option");
+								var optionTxt=document.createTextNode(cityVal);
+								optionEle.appendChild(optionTxt);
+								city.appendChild(optionEle);
+							}
+						}
+					}*/
+				}
+		}
+	}
+	function getXhr(){
+		var xhr = null;
+		if(window.XMLHttpRequest){
+			xhr = new XMLHttpRequest();
+		}else{
+			xhr = new ActiveXObject("Microsoft.XMLHttp");
+		}
+		return xhr;
+	}
+  </script>
+ </body>
+</html>
